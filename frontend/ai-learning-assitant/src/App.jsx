@@ -10,6 +10,7 @@ import FlashcardListPage from './pages/Flashcards/FlashcardListPage';
 import FlashcardPage from './pages/Flashcards/FlashcardPage';
 import QuizResultPage from './pages/Quizzes/QuizResultPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import QuizTakePage from './pages/Quizzes/QuizTakePage';
 
 const App = () => {
   const isAuthenticated = true // Placeholder for authentication logic
