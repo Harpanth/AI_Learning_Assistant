@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 
 import {register, login, getProfile,updateProfile,changePassword} from '../controllers/authController.js';
 
-import authMiddleware from '../middleware/authMiddleware.js';
+import protect from '../middleware/auth.js';
 
 const router = express.Router();
 
