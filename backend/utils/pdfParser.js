@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import pdfParse from 'pdf-parse';
+import PDFParse from 'pdf-parse';
 
 /**  
  * Extract text from PDF file
