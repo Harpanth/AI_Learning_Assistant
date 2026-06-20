@@ -162,7 +162,7 @@ export const getDocument = async (req, res, next) => {
                 success: false,
                 error: "Document not found",
                 statusCode: 404
-            })
+            });
         }
 
         // Get counts of associated flashcards and quizzes
@@ -180,6 +180,17 @@ export const getDocument = async (req, res, next) => {
         document.lastAccessed = Date.now();
         await document.save();
 
+        //Combine document date with counts
+        const documentsData = document.toObject();
+        documentsData.flashcardCount = flashcardCount;
+        documentsData.quizCount = quizCount;
+
+        res.status(200).json({
+            success: true,
+            data: documentData
+        });
+
+
     } catch (error) {
         next(error);
     }
@@ -191,6 +202,29 @@ export const getDocument = async (req, res, next) => {
 
 export const deleteDocument = async (req, res, next) => {
     try {
+        const document = await Document.findOne({
+            _id: req.params.id,
+            userId: req.user_id
+        });
+        
+        if(!document){
+            return res.status(404).json({
+                success: false,
+                error: "Document not found",
+                statusCode: 404
+            });
+        }
+
+        // Delete file from filesystem
+        await fs.unlink(document.filePath).catch(() => {});
+
+        // Delete document
+        await document.deleteOne();
+        
+        res.status(200).json({
+            success: true,
+            message: "Document deleted successfully"
+        });
 
     } catch (error) {
         next(error);
@@ -201,10 +235,3 @@ export const deleteDocument = async (req, res, next) => {
 // @route PUT /api/documents/:id
 // @access Private
 
-export const updateDocument = async (req, res, next) => {
-    try {
-
-    } catch (error) {
-        next(error);
-    }
-}
