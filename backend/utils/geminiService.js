@@ -43,17 +43,17 @@ export const generateFlashcards = async(text,count=10) => {
         const cards = generatedText.split('---').filter(c => c.trim());
 
         for(const card of cards){
-            const lines = card.trim.split('\n');
-            let question = '', difficulty = 'medium';
+            const lines = card.trim().split('\n');
+            let question = '',answer='', difficulty = 'medium';
 
             for(const line of lines){
-                if(line.startWith('Q:')){
+                if(line.startsWith('Q:')){
                     question = line.substring(2).trim();
-                } else if(line.startWith('A:')){
+                } else if(line.startsWith('A:')){
                     answer = line.substring(2).trim();
-                } else if(line.startWith('D:')){
+                } else if(line.startsWith('D:')){
                     const diff = line.substring(2).trim().toLowerCase();
-                    if(['eas','medium','hard'].includes(diff)){
+                    if(['easy','medium','hard'].includes(diff)){
                         difficulty = diff;
                     }
                 }
@@ -170,7 +170,14 @@ export const generateSummary = async(text) => {
  * @param {Promise<string>}
  */
 export const chatWithContext = async(question,chunks) => {
-    const context = chunks.map((c,i) => `[Chunk ${i_1}]\n${c.content}.join('\n\n)`);
+    // const context = chunks.map((c,i) => `[Chunk ${i_1}]\n${c.content}.join('\n\n)`);
+    const context = chunks
+                        .map(
+                        (c,i) =>
+                        `[Chunk ${i+1}]
+                        ${c.content}`
+                        )
+                        .join('\n\n');
     
     console.log("context_____",context);
 
