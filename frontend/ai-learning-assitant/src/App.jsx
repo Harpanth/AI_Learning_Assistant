@@ -11,6 +11,7 @@ import FlashcardPage from './pages/Flashcards/FlashcardPage';
 import QuizResultPage from './pages/Quizzes/QuizResultPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import QuizTakePage from './pages/Quizzes/QuizTakePage';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 const App = () => {
   const isAuthenticated = true // Placeholder for authentication logic
@@ -33,7 +34,7 @@ const App = () => {
 
       {/* Protected Routes */}
         <Route element = {<ProtectedRoute />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/documents" element={<DocumentListPage />} />
           <Route path="/documents/:id" element={<DocumentDetailPage />} />
           <Route path="/flashcards" element={<FlashcardListPage />} />
