@@ -12,10 +12,11 @@ import QuizResultPage from './pages/Quizzes/QuizResultPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import QuizTakePage from './pages/Quizzes/QuizTakePage';
 import Dashboard from './pages/Dashboard/Dashboard';
+import { useAuth } from './context/AuthContext';
 
 const App = () => {
-  const isAuthenticated = true // Placeholder for authentication logic
-  const Loading = false;
+
+  const {isAuthenticated,Loading} = useAuth();
 
   if(Loading){
     return (
