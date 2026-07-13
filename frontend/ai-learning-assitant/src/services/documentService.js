@@ -12,9 +12,9 @@ const getDocuments = async () => {
 
 const uploadDocument = async (formData) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.DOCUMENTS.UPLOAD, formData, {
+        const response = await axiosInstance.post(API_PATHS.DOCUMENTS.UPLOAD, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                "Content-Type": "multipart/form-data",
             },
         });
         return response.data;
@@ -25,7 +25,7 @@ const uploadDocument = async (formData) => {
 
 const deleteDocument = async (id) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.DOCUMENTS.DELETE_DOCUMENT(id));
+        const response = await axiosInstance.delete(API_PATHS.DOCUMENTS.DELETE_DOCUMENT(id));
         return response.data;
     } catch (error) {
         throw error.response?.data || { message: "Failed to delete document" }

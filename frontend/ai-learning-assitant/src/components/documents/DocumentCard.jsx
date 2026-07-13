@@ -16,7 +16,7 @@ const formatFileSize = (bytes) => {
         unitIndex++;
     }
 
-    return `${sizeFixed(1)} ${units[unitIndex]}`;
+    return `${size.toFixed(1)} ${units[unitIndex]}`;
 };
 
 const DocumentCard = ({
@@ -35,7 +35,7 @@ const DocumentCard = ({
     };
 
     return <div
-        className="group relative bg-white/9- backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1"
+        className="group relative bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 flex flex-col justify-between cursor-pointer hover:-translate-y-1"
         onClick={handleNavigate}
     >
         {/* Header Section */}
@@ -53,8 +53,8 @@ const DocumentCard = ({
             </div>
 
             {/* Title */}
-            <h3 className="text-base font-semibold text-slate-900 truncate mb-2" title={document.title}>
-                {document.title}
+            <h3 className="text-base font-semibold text-slate-900 truncate mb-2" title={document?.title}>
+                {document?.title}
             </h3>
 
             {/* Document Info */}
@@ -86,7 +86,11 @@ const DocumentCard = ({
         <div className="mt-5 pt-4 border-t border-slate-100">
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
                 <Clock className="w-3.5 h-3.5" strokeWidth={2} />
-                <span>Uploaded {moment(document.createdAt).fromNow()}</span>
+                <span>
+                    {document?.createdAt
+                        ? `Uploaded ${moment(document.createdAt).fromNow()}`
+                        : "Unknown upload date"}
+                </span>
             </div>
         </div>
 
