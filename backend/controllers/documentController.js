@@ -33,7 +33,7 @@ export const uploadDocument = async (req, res, next) => {
         }
 
         // Construct the URL for the uploaded file
-        const baseUrl = `https://localhost:${process.env.PORT || 8000}`;
+        const baseUrl = `http://localhost:${process.env.PORT || 8000}`;
         const fileUrl = `${baseUrl}/uploads/documents/${req.file.filename}`;
 
         //Create document record
@@ -105,7 +105,7 @@ export const getDocuments = async (req, res, next) => {
                     from: 'flashcards',
                     localField: '_id',
                     foreignField: 'documentId',
-                    as: 'FlashcardSets'
+                    as: 'flashcardSets'
                 }
             },
             {
@@ -123,10 +123,10 @@ export const getDocuments = async (req, res, next) => {
                 }
             },
             {
-                $projects: {
+                $project: {
                     extractedText: 0,
                     chunks: 0,
-                    flashCardSets: 0,
+                    flashcardSets: 0,
                     quizzes: 0
                 }
             },
@@ -187,7 +187,7 @@ export const getDocument = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            data: documentData
+            data: documentsData
         });
 
 
@@ -204,7 +204,7 @@ export const deleteDocument = async (req, res, next) => {
     try {
         const document = await Document.findOne({
             _id: req.params.id,
-            userId: req.user_id
+            userId: req.user._id
         });
         
         if(!document){

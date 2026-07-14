@@ -41,14 +41,14 @@ const errorHandler = (err,req,res,next) => {
 
     console.error('Error:', {
         message: err.message,
-        stack: process.env.NODE_ENv === "development" ? err.stack : "N/A",
+        stack: process.env.NODE_ENV === "development" ? err.stack : "N/A",
     });
 
     res.status(statusCode).json({
         success: false,
         message,
         statusCode,
-        ...[process.env.NODE_ENV === "development" && { stack: err.stack }]
+        ...(process.env.NODE_ENV === "development" && { stack: err.stack })
     });
 
 }

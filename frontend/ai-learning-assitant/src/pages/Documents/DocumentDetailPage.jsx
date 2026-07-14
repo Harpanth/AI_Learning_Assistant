@@ -4,6 +4,9 @@ import documentService from '../../services/documentService'
 import Spinner from '../../components/common/Spinner'
 import toast from 'react-hot-toast'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
+import PageHeader from '../../components/common/PageHeader'
+import Tabs from '../../components/common/Tabs'
+import ChatInterface from '../../components/chat/ChatInterface'
 
 function DocumentDetailPage() {
 
@@ -24,8 +27,8 @@ function DocumentDetailPage() {
       } finally {
         setLoading(false);
       }
-      fetchDocumentDetails();
     };
+    fetchDocumentDetails();
   }, [id]);
 
   // Helper function to get the full PDF URL
@@ -35,7 +38,7 @@ function DocumentDetailPage() {
     const filePath = document.data.filePath;
 
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
-      return filePath; _
+      return filePath; 
     }
 
     const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -83,7 +86,7 @@ function DocumentDetailPage() {
   };
 
   const renderChat = () => {
-    return "renderChat"
+    return <ChatInterface/>
   };
 
   const renderAIActions = () => {
@@ -99,23 +102,33 @@ function DocumentDetailPage() {
   };
 
   const tabs = [
-    {name: 'Content', label:'Content', content: renderContent()},
-    {name: 'Chat', label:'Chat', content: renderChat()},
-    {name: 'AI Actions', label:'AI Actions', content: renderAIActions()},
-    {name: 'Flashcards', label:'Flashcards', content: renderFlashcardsTab()},
-    {name: 'Quizzes', label:'Quizzes', content: renderQuizzesTab()}
+    { name: 'Content', label: 'Content', content: renderContent() },
+    { name: 'Chat', label: 'Chat', content: renderChat() },
+    { name: 'AI Actions', label: 'AI Actions', content: renderAIActions() },
+    { name: 'Flashcards', label: 'Flashcards', content: renderFlashcardsTab() },
+    { name: 'Quizzes', label: 'Quizzes', content: renderQuizzesTab() }
   ];
 
-  if(loading){
-    return <Spinner/>
+  if (loading) {
+    return <Spinner />
   }
 
-  if(!document){
+  if (!document) {
     return <div className="text-center p-8">Document not found.</div>
   }
 
   return (
-    <div>DocumentDetailPage</div>
+    <div>
+      <div className="mb-4">
+        <Link to="/documents" className="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
+          <ArrowLeft size={16} />
+          Back to Documents
+        </Link>
+      </div>
+      <PageHeader title={document?.data?.title}/>
+      <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab}/>
+    </div>
+
   )
 }
 
