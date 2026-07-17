@@ -20,7 +20,7 @@ const MarkdownRendered = ({ content }) => {
           li: ({ node, ...props }) => <li className="mb-1" {...props} />,
           strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
           em: ({ node, ...props }) => <em className="italic" {...props} />,
-          blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-neutral-300 pl-4 itali text-neutral-600 my-4" {...props} />,
+          blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-neutral-300 pl-4 italic text-neutral-600 my-4" {...props} />,
           code: ({ node,inline,className,children, ...props }) => {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
@@ -40,7 +40,7 @@ const MarkdownRendered = ({ content }) => {
           },
           pre: ({ node, ...props }) => <pre className="bg-neutral-800 text-white p-3 rounded-md overflow-x-auto font-mono text-sm my-4" {...props}></pre>,
         }}
-      ></ReactMarkdown>
+      >{content}</ReactMarkdown>
     </div>
   )
 }

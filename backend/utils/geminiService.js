@@ -3,9 +3,10 @@ import { GoogleGenAI } from '@google/genai'
 
 dotenv.config();
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite";
 
-if(!process.env.GEMINI_API_KEY){
+if (!process.env.GEMINI_API_KEY) {
     console.error('FATAL ERROR: GEMINI_API_KEY is not set in the environment variables');
     process.exit(1);
 }
@@ -17,7 +18,7 @@ if(!process.env.GEMINI_API_KEY){
  * @returns {Promise<Array<{question: string,answer: string, difficulty:string}>>}
  */
 
-export const generateFlashcards = async(text,count=10) => {
+export const generateFlashcards = async (text, count = 10) => {
     const prompt = `Generate exactly ${count} educational flashcards from the following text,
     format each flashcard as:
     Q: [clear, specific question]
@@ -27,12 +28,12 @@ export const generateFlashcards = async(text,count=10) => {
     Separate each flashcard with "---"
     
     Text
-    ${text.substring(0,15000)}`;
+    ${text.substring(0, 15000)}`;
 
     try {
-        
+
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-lite",
+            model: MODEL,
             contents: prompt,
         });
 
@@ -42,31 +43,31 @@ export const generateFlashcards = async(text,count=10) => {
         const flashcards = [];
         const cards = generatedText.split('---').filter(c => c.trim());
 
-        for(const card of cards){
+        for (const card of cards) {
             const lines = card.trim().split('\n');
-            let question = '',answer='', difficulty = 'medium';
+            let question = '', answer = '', difficulty = 'medium';
 
-            for(const line of lines){
-                if(line.startsWith('Q:')){
+            for (const line of lines) {
+                if (line.startsWith('Q:')) {
                     question = line.substring(2).trim();
-                } else if(line.startsWith('A:')){
+                } else if (line.startsWith('A:')) {
                     answer = line.substring(2).trim();
-                } else if(line.startsWith('D:')){
+                } else if (line.startsWith('D:')) {
                     const diff = line.substring(2).trim().toLowerCase();
-                    if(['easy','medium','hard'].includes(diff)){
+                    if (['easy', 'medium', 'hard'].includes(diff)) {
                         difficulty = diff;
                     }
                 }
             }
 
-            if(question && answer){
-                flashcards.push({question,answer,difficulty});
+            if (question && answer) {
+                flashcards.push({ question, answer, difficulty });
             }
         }
 
-        return flashcards.slice(0,count);
+        return flashcards.slice(0, count);
     } catch (error) {
-        console.error('Gemini API error:',error);
+        console.error('Gemini API error:', error);
         throw new Error('Failed to generate flashcards');
     }
 }
@@ -76,8 +77,8 @@ export const generateFlashcards = async(text,count=10) => {
  * @param {string} text - Document text
  * @param {number} numQuestions - Number of questions
  * @returns {Promise<Array<{question: string,options: Array, coorectAnswer: string,explanation: string, difficulty:string}>>}
- */ 
-export const generateQuiz = async (text,numQuestions) => {
+ */
+export const generateQuiz = async (text, numQuestions) => {
     const prompt = `Generate exactly ${numQuestions} multiple choice questions from the following text
     Format each question as:
     Q: [Question]
@@ -92,11 +93,11 @@ export const generateQuiz = async (text,numQuestions) => {
     Separate questions with "---"
     
     Text:
-    ${text.substring(0,15000)}`;
+    ${text.substring(0, 15000)}`;
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-lite",
+            model: MODEL,
             contents: prompt,
         });
 
@@ -105,36 +106,36 @@ export const generateQuiz = async (text,numQuestions) => {
         const questions = [];
         const questionBlocks = generatedText.split('---').filter(q => q.trim());
 
-        for(const block of questionBlocks){
+        for (const block of questionBlocks) {
             const lines = block.trim().split('\n');
-            let question = '',options = [], correctAnswer = '', explanation= '', difficulty='medium';
+            let question = '', options = [], correctAnswer = '', explanation = '', difficulty = 'medium';
 
-            for(const line of lines){
+            for (const line of lines) {
                 const trimmed = line.trim();
-                if(trimmed.startsWith('Q:')){
+                if (trimmed.startsWith('Q:')) {
                     question = trimmed.substring(2).trim();
-                } else if(trimmed.match(/^O\d:/)){
+                } else if (trimmed.match(/^Q\d:/)) {
                     options.push(trimmed.substring(3).trim());
-                } else if(trimmed.startsWith('C:')){
+                } else if (trimmed.startsWith('C:')) {
                     correctAnswer = trimmed.substring(2).trim();
-                } else if(trimmed.startsWith('E:')){
+                } else if (trimmed.startsWith('E:')) {
                     explanation = trimmed.substring(2).trim();
-                } else if(trimmed.startsWith('D:')){
+                } else if (trimmed.startsWith('D:')) {
                     const diff = trimmed.substring(2).trim().toLowerCase();
-                    if(['easy','medium','hard'].includes(diff)){
-                        difficulty=diff;
+                    if (['easy', 'medium', 'hard'].includes(diff)) {
+                        difficulty = diff;
                     }
                 }
             }
 
-            if(question && options.length === 4 && correctAnswer){
-                questions.push({question,options,correctAnswer,explanation,difficulty});
+            if (question && options.length === 4 && correctAnswer) {
+                questions.push({ question, options, correctAnswer, explanation, difficulty });
             }
         }
-        return questions.slice(0,numQuestions);
+        return questions.slice(0, numQuestions);
     } catch (error) {
-        console.error('Gemini API error:',error);
-        throw new Error('Failed to generate quiz');   
+        console.error('Gemini API error:', error);
+        throw new Error('Failed to generate quiz');
     }
 }
 
@@ -143,22 +144,22 @@ export const generateQuiz = async (text,numQuestions) => {
  * @param {string} text - Document text
  * @return {Promise<string>}
  */
-export const generateSummary = async(text) => {
+export const generateSummary = async (text) => {
     const prompt = `Provide a concise summary of the following text, highlighting the key concepts, main ideas, and important points.
     Keep the summary clear and structured
     
     Text:
-    ${text.substring(0,2000)}`;
+    ${text.substring(0, 2000)}`;
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-lite",
+            model: MODEL,
             contents: prompt,
         });
         const generatedText = response.text;
         return generatedText;
     } catch (error) {
-        console.error("Gemini API error",error);
+        console.error("Gemini API error", error);
         throw new Error('Failed to generate summary');
     }
 };
@@ -169,17 +170,17 @@ export const generateSummary = async(text) => {
  * @param {Array<Object>} chunks - Relevant document chunks
  * @param {Promise<string>}
  */
-export const chatWithContext = async(question,chunks) => {
+export const chatWithContext = async (question, chunks) => {
     // const context = chunks.map((c,i) => `[Chunk ${i_1}]\n${c.content}.join('\n\n)`);
     const context = chunks
-                        .map(
-                        (c,i) =>
-                        `[Chunk ${i+1}]
+        .map(
+            (c, i) =>
+                `[Chunk ${i + 1}]
                         ${c.content}`
-                        )
-                        .join('\n\n');
-    
-    console.log("context_____",context);
+        )
+        .join('\n\n');
+
+    console.log("context_____", context);
 
     const prompt = `Based on the following context from a document. Analyse the context and answer the user's question
     If the answer is not in the context, say so
@@ -193,14 +194,22 @@ export const chatWithContext = async(question,chunks) => {
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-lite",
+            model: MODEL,
             contents: prompt,
         });
         const generatedText = response.text;
         return generatedText;
     } catch (error) {
-        console.error('Gemini API error:',error);
-        throw new Error('Failed to process chat request');
+        console.error("===== GEMINI ERROR =====");
+        console.error(error);
+
+        if (error.response) {
+            console.error(error.response);
+        }
+
+        console.error(error.message);
+
+        throw error;
     }
 };
 
@@ -209,25 +218,25 @@ export const chatWithContext = async(question,chunks) => {
  * @param {string} concept  concept to explain
  * @param {string} context - Relevant context
  * @return {Promise<string>}
- */ 
+ */
 
-export const explainConcept = async(concept,context) => {
+export const explainConcept = async (concept, context) => {
     const prompt = `Explain the concept of "${concept}" based on the following context.
     Provide a clear, educational explanation that's easy to understand
     Include examples if relevant.
     
     Context:
-    ${context.substring(0,10000)}`;
+    ${context.substring(0, 10000)}`;
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-lite",
+            model: MODEL,
             contents: prompt,
         });
         const generatedText = response.text;
         return generatedText;
     } catch (error) {
-        console.error('Gemini API error',error);
+        console.error('Gemini API error', error);
         throw new Error('Failed to explain concept');
     }
 }
