@@ -4,6 +4,7 @@ import { Sparkles, BookOpen, Lightbulb } from 'lucide-react'
 import aiService from '../../services/aiService';
 import toast from 'react-hot-toast';
 import MarkdownRendered from '../common/MarkdownRendered';
+import Modal from '../common/Modal';
 
 const AIActions = () => {
 
@@ -40,6 +41,7 @@ const AIActions = () => {
                 documentId,
                 concept
             );
+            console.log(explanation);
             setModalTitle(`Explanation of ${concept}`);
             setModalContent(explanation);
             setIsModalOpen(true);
