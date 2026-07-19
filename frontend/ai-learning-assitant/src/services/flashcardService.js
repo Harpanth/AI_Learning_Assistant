@@ -3,7 +3,7 @@ import { API_PATHS } from "../utils/apiPath";
 
 const getAllFlashcardSets = async () => {
     try {
-        const response = await axiosInstance.get(API_PATHS.FlASHCARDS.GET_ALL_FLASHCARD_SETS);
+        const response = await axiosInstance.get(API_PATHS.FLASHCARDS.GET_ALL_FLASHCARD_SETS);
         return response.data;
     } catch (error) {
         throw error.response?.data || {message: "failed to fetch flashcard sets"};
@@ -12,7 +12,7 @@ const getAllFlashcardSets = async () => {
 
 const getFlashcardsForDocument = async (documentId) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.FlASHCARDS.GET_FLASHCARDS_FOR_DOC(documentId));
+        const response = await axiosInstance.get(API_PATHS.FLASHCARDS.GET_FLASHCARDS_FOR_DOC(documentId));
         return response.data;
     } catch (error) {
         throw error.response?.data || {message: "failed to fetch flashcards"};
@@ -21,7 +21,7 @@ const getFlashcardsForDocument = async (documentId) => {
 
 const reviewFlashcard = async (cardId,cardIndex) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.FlASHCARDS.REVIEW_FLASHCARD(cardId),{cardIndex});
+        const response = await axiosInstance.post(API_PATHS.FLASHCARDS.REVIEW_FLASHCARD(cardId),{cardIndex});
         return response.data;
     } catch (error) {
         throw error.response?.data || {message: "failed to review flashcard"};
@@ -30,7 +30,7 @@ const reviewFlashcard = async (cardId,cardIndex) => {
 
 const toggleStar = async(cardId) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.FlASHCARDS.TOGGLE_STAR(cardId));
+        const response = await axiosInstance.put(API_PATHS.FLASHCARDS.TOGGLE_STAR(cardId));
         return response.data;
     } catch (error) {
         throw error.response?.data || {message: "failed to star flashcard"};
@@ -39,7 +39,7 @@ const toggleStar = async(cardId) => {
 
 const deleteFlashcardSet = async(id) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.FlASHCARDS.DELETE_FLASHCARD_SET(id));
+        const response = await axiosInstance.delete(API_PATHS.FLASHCARDS.DELETE_FLASHCARD_SET(id));
         return response.data;
     } catch (error) {
         throw error.response?.data || {message: "failed to delete flashcard"};

@@ -3,14 +3,14 @@ import Flashcard from "../models/Flashcard.js";
 // @desc Get all flashcards for a document
 // @route Get /api/flashcards/:documentId
 // @access Private
-export const getFlashcards = async(req,resizeBy,next) => {
+export const getFlashcards = async (req, res, next) => {
     try {
         const flashcards = await Flashcard.find({
             userId: req.user._id,
             documentId: req.params.documentId
         })
-            .populate('document','title fileName')
-            .sort({createdAt: -1});
+            .populate('documentId', 'title fileName')
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
             success: true,
@@ -26,14 +26,14 @@ export const getFlashcards = async(req,resizeBy,next) => {
 // @desc Get all flashcard sets for a user
 // @route Get /api/flashcards
 // @access Private
-export const getAllFlashcardSets = async(req,resizeBy,next) => {
+export const getAllFlashcardSets = async (req, res, next) => {
     try {
-        const flashcardSets = await Flashcard.find({userId: req.user._id})
-        .populate('documentId','title')
-        .sort({createdAt: -1});
+        const flashcardSets = await Flashcard.find({ userId: req.user._id })
+            .populate('documentId', 'title')
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
-            success:true,
+            success: true,
             count: flashcardSets.length,
             data: flashcardSets
         });
@@ -45,24 +45,24 @@ export const getAllFlashcardSets = async(req,resizeBy,next) => {
 // @desc Mark flashcard as reviewd
 // @route POST /api/flashcards/:cardId/review
 // @access Private
-export const reviewFlashcard = async (req,resizeBy,next) => {
+export const reviewFlashcard = async (req, res, next) => {
     try {
         const flashcardSet = await Flashcard.findOne({
             'cards._id': req.params.cardId,
             userId: req.user._id
         });
 
-        if(!flashcardSet){
+        if (!flashcardSet) {
             return res.status(404).json({
-                success:false,
+                success: false,
                 error: 'Flashcard set or card not found',
                 statusCode: 404
             });
         }
 
-        const cardIndex = flashcardSet.cards.findIndex(card => card._id.toString === req.params.cardId);
+        const cardIndex = flashcardSet.cards.findIndex(card => card._id.toString() === req.params.cardId);
 
-        if(cardIndex === -1){
+        if (cardIndex === -1) {
             return res.status(404).json({
                 success: false,
                 error: 'Card not found in set',
@@ -71,15 +71,15 @@ export const reviewFlashcard = async (req,resizeBy,next) => {
         }
 
         //Update review info
-        flashcardSet.cards(cardIndex).lastReviewed = new Date();
-        flashcardSet.cards(cardIndex).reviewCount += 1;
+        flashcardSet.cards[cardIndex].lastReviewed = new Date();
+        flashcardSet.cards[cardIndex].reviewCount += 1;
 
         await flashcardSet.save();
 
         return res.status(200).json({
             success: true,
             data: flashcardSet,
-            message: 'Flashcard reviewd successfully'
+            message: 'Flashcard reviewed successfully'
         });
 
     } catch (error) {
@@ -90,16 +90,16 @@ export const reviewFlashcard = async (req,resizeBy,next) => {
 // @desc Toggle star/favorite on flashcard
 // @route PUT /api/flashcards/:cardId/star
 // @access Private
-export const toggleStarFlashcard = async (req,res,next) => {
+export const toggleStarFlashcard = async (req, res, next) => {
     try {
-        const flashcardSet = await flashcard.findOne({
+        const flashcardSet = await Flashcard.findOne({
             'cards._id': req.params.cardId,
             userId: req.user._id
         });
 
-        if(!flashcardSet){
+        if (!flashcardSet) {
             return res.status(404).json({
-                success:false,
+                success: false,
                 error: "Flashcard set or card not found",
                 statusCode: 404
             });
@@ -107,23 +107,24 @@ export const toggleStarFlashcard = async (req,res,next) => {
 
         const cardIndex = flashcardSet.cards.findIndex(card => card._id.toString() === req.params.cardId);
 
-        if(cardIndex === -1){
+        if (cardIndex === -1) {
             return res.status(404).json({
-                success:false,
+                success: false,
                 error: 'Card not found in set',
                 statusCode: 404
             });
         }
 
         // Toggle star
-        flashcardSet.cards(cardIndex).isStarred = !flashcardSet.cards(cardIndex).isStarred;
+        flashcardSet.cards[cardIndex].isStarred =
+            !flashcardSet.cards[cardIndex].isStarred;
 
         await flashcardSet.save();
 
         return res.status(200).json({
             success: true,
             data: flashcardSet,
-            message: `Flashcard ${flashcardSet.cards(cardIndex).isStarred?'starred':'unstarred'}`
+            message: `Flashcard ${flashcardSet.cards[cardIndex].isStarred ? 'starred' : 'unstarred'}`
         });
     } catch (error) {
         next(error);
@@ -133,14 +134,14 @@ export const toggleStarFlashcard = async (req,res,next) => {
 // @desc Delete flashcard set
 // @route DELtE /api/flashcards/:id
 // @access Private
-export const deleteFlashcardSet = async (req,res,next) => {
+export const deleteFlashcardSet = async (req, res, next) => {
     try {
         const flashcardSet = await Flashcard.findOne({
             _id: req.params.id,
             userId: req.user._id
         });
 
-        if(!flashcardSet){
+        if (!flashcardSet) {
             return res.status(404).json({
                 success: false,
                 error: 'Flashcard set not found',
@@ -151,7 +152,7 @@ export const deleteFlashcardSet = async (req,res,next) => {
         await flashcardSet.deleteOne();
 
         return res.status(200).json({
-            success:true,
+            success: true,
             message: 'Flashcard set deleted successfully'
         });
     } catch (error) {
