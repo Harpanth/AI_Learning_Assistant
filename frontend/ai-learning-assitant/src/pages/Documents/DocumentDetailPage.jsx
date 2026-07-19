@@ -9,6 +9,7 @@ import Tabs from '../../components/common/Tabs'
 import ChatInterface from '../../components/chat/ChatInterface'
 import AIActions from '../../components/ai/AIActions'
 import FlashcardManager from '../../components/flashcards/FlashcardManager'
+import QuizManager from '../../components/quizzes/QuizManager'
 
 function DocumentDetailPage() {
 
@@ -40,7 +41,7 @@ function DocumentDetailPage() {
     const filePath = document.data.filePath;
 
     if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
-      return filePath; 
+      return filePath;
     }
 
     const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
@@ -88,19 +89,19 @@ function DocumentDetailPage() {
   };
 
   const renderChat = () => {
-    return <ChatInterface/>
+    return <ChatInterface />
   };
 
   const renderAIActions = () => {
-    return <AIActions/>;
+    return <AIActions />;
   };
 
   const renderFlashcardsTab = () => {
-    return <FlashcardManager documentId = {id} />
+    return <FlashcardManager documentId={id} />
   };
 
   const renderQuizzesTab = () => {
-    return "renderQuizzesTab"
+    return <QuizManager documentId={id} />
   };
 
   const tabs = [
@@ -127,8 +128,8 @@ function DocumentDetailPage() {
           Back to Documents
         </Link>
       </div>
-      <PageHeader title={document?.data?.title}/>
-      <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab}/>
+      <PageHeader title={document?.data?.title} />
+      <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
 
   )
