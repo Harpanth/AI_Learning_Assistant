@@ -119,7 +119,66 @@ const FlashcardManager = ({ documentId }) => {
     }
 
     const renderFlashcardViewer = () => {
-        return "renderFlashcardViewer"
+        const currentCard = selectedSet.cards[currentCardIndex];
+        return (
+            <div className="space-y-8">
+                {/* Back Button */}
+                <button
+                    onClick={() => setSelectedSet(null)}
+                    className="group inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-600 transition-all duration-200"
+                >
+                    <ArrowLeft
+                        className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200"
+                        strokeWidth={2}
+                    />
+                    Back to Sets
+                </button>
+
+                {/* Flashcard Display */}
+                <div className="flex flex-col items-center space-y-8">
+                    <div className="w-full max-w-2xl">
+                        <Flashcard
+                            flashcard={currentCard}
+                            onToggleStar={handleToggleStar}
+                        />
+                    </div>
+
+                    {/* Navigation Controls */}
+                    <div className="">
+                        <button
+                            onClick={handlePrevCard}
+                            disabled={selectedSet.cards.length <= 1}
+                            className=""
+                        >
+                            <ChevronLeft
+                                className=""
+                                strokeWidth={2.5}
+                            />
+                            Previous
+                        </button>
+                        <div className="">
+                            <span className="">
+                                {currentCardIndex + 1}{""}
+                                <span className=""></span>{" "}
+                                {selectedSet.cards.length}
+                            </span>
+                        </div>
+
+                        <button
+                            onClick={handleNextCard}
+                            disabled={selectedSet.cards.length <= 1}
+                            className=""
+                        >
+                            Next
+                            <ChevronRight
+                                className=""
+                                strokeWidth={2.5}
+                            />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
     };
 
     const renderSetList = () => {
