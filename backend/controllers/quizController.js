@@ -12,7 +12,7 @@ export const getQuizzes = async (req, res, next) => {
         .populate('documentId','title fileName')
         .sort({createdAt:-1});
 
-        req.status(200).json({
+        res.status(200).json({
             success: true,
             count: quizzes.length,
             data: quizzes

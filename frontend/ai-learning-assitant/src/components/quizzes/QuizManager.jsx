@@ -78,6 +78,14 @@ const QuizManager = ({ documentId }) => {
                 />
             );
         }
+
+        return (
+            <div className="">
+                {quizzes.map((quiz) => (
+                    <QuizCard key={quiz._id} quiz={quiz} onDelete={handleDeleteRequest} />
+                ))}
+            </div>
+        )
     };
 
     return (
