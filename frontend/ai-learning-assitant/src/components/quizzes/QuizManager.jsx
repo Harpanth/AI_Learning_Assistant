@@ -8,6 +8,7 @@ import Spinner from '../common/Spinner';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import QuizCard from './QuizCard';
+import EmptyState from '../common/EmptyState';
 
 const QuizManager = ({ documentId }) => {
 
@@ -65,11 +66,32 @@ const QuizManager = ({ documentId }) => {
     };
 
     const renderQuizContent = () => {
-        return "renderQuizContent"
+        if (loading) {
+            return <Spinner />
+        }
+
+        if (quizzes.length === 0) {
+            return (
+                <EmptyState
+                    title="No Quizzes Yet"
+                    description="Generate a quiz from your document to test your knowledge."
+                />
+            );
+        }
     };
 
     return (
-        <div>QuizManager</div>
+        <div className="bg-white border border-neutral-200 rounded-lg p-6">
+            <div className="flex justify-end gap-2 mb-4">
+                <Button
+                    onClick={() => setIsGenerateModalOpen(true)}
+                >
+                    <Plus size={16} />
+                    Generate Quiz
+                </Button>
+            </div>
+            {renderQuizContent()}
+        </div>
     )
 }
 
