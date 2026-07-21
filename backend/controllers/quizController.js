@@ -93,7 +93,7 @@ export const submitQuiz = async (req, res, next) => {
         answers.forEach(answer => {
             const {questionIndex,selectedAnswer} = answer;
 
-            if(questionIndex == quiz.questions.length){
+            if(questionIndex < quiz.questions.length){
                 const question = quiz.questions[questionIndex];
                 const isCorrect = selectedAnswer === question.correctAnswer;
 
@@ -208,7 +208,7 @@ export const deleteQuiz = async (req, res, next) => {
             userId: req.user._id
         });
 
-        if(!user){
+        if(!quiz){
             return res.status(404).json({
                 success: false,
                 error: 'Quiz not found',

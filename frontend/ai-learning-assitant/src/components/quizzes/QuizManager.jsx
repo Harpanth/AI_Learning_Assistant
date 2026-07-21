@@ -23,7 +23,7 @@ const QuizManager = ({ documentId }) => {
     const [selectedQuiz, setSelectedQuiz] = useState(null);
 
     const fetchQuizzes = async () => {
-        setLoading(false);
+        setLoading(true);
         try {
             const data = await quizService.getQuizzesForDocument(documentId);
             setQuizzes(data.data);
@@ -80,7 +80,7 @@ const QuizManager = ({ documentId }) => {
         }
 
         return (
-            <div className="">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {quizzes.map((quiz) => (
                     <QuizCard key={quiz._id} quiz={quiz} onDelete={handleDeleteRequest} />
                 ))}
@@ -99,6 +99,38 @@ const QuizManager = ({ documentId }) => {
                 </Button>
             </div>
             {renderQuizContent()}
+
+            {/* Generate Quiz */}
+
+            <Modal
+                isOpen={isGenerateodalOpen}
+                onClose={() => setIsGenerateModalOpen(false)}
+                title="Generate New Quiz"
+            >
+                <form onSubmit={handleGenerateQuiz} className="space-y-6">
+                    <div>
+                        <label className="block text-xs font-medium text-neutral-700 mb-1.5">
+                            Number of Questions
+                        </label>
+                        <input
+                            value={numQuestions}
+                            onChange={(e) => setNumQuestions(Math.max(1, parseInt(e.target.value) || 1))}
+                            min="1"
+                            required
+                            type="number"
+                            className="w-full h-9 px-3 border border-neutral-200 rounded-lg bg-white text-sm text-neutral-900 placeholder-neutral-400 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-[#00d492] focus:border-transparent"
+                        />
+                    </div>
+                    <div className="flex justify-end gap-2 pt-2">
+                        <Button
+                            type="submit" disabled={generating}>
+                            {generating ? 'Generating...' : 'Generate'}
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
+
+            {/* Delete Confirmation */}
         </div>
     )
 }
