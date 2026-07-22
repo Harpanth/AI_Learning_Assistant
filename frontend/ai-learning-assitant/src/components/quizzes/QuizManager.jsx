@@ -62,7 +62,19 @@ const QuizManager = ({ documentId }) => {
     };
 
     const handleConfirmDelete = async () => {
-
+        if(!selectedQuiz) return;
+        setDeleting(true);
+        try {
+            await quizService.deleteQuiz(selectedQuiz._id);
+            toast.success(`'${selectedQuiz.title || 'Quiz'}' deleted.`);
+            SetIsDeleteModalOpen(false);
+            setSelectedQuiz(null);
+            setQuizzes(quizzes.filter(q => q._id !== selectedQuiz._id));
+        } catch (error) {
+            toast.error(error.message || 'Failed to delete quiz.');
+        } finally {
+            setDeleting(false);
+        }
     };
 
     const renderQuizContent = () => {
@@ -131,6 +143,34 @@ const QuizManager = ({ documentId }) => {
             </Modal>
 
             {/* Delete Confirmation */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => SetIsDeleteModalOpen(false)}
+                title="Confirm Delete Quiz"
+            >
+                <div className="space-y-4">
+                    <p className="text-sm text-neutral-600">
+                        Are you sure you want to delete the quiz: <span className="font-semibold text-neutral-900">{selectedQuiz?.title || 'this quiz'}</span>? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end gap-2 pt-2">
+                        <Button
+                            type='button'
+                            variant='outline'
+                            onClick={() => setIsGenerateModalOpen(false)}
+                            disabled={deleting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleConfirmDelete}
+                            disabled={deleting}
+                            className="bg-red-500 hover:bg-red-600 active:bg-red-700 focus:ring-red-500"
+                        >
+                            {deleting ? 'Deleting...' : 'Delete'}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 }
