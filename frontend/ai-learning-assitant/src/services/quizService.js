@@ -19,16 +19,22 @@ const getQuizById = async (quizId) => {
     }
 };
 
-const submitQuiz = async(quizId, answers) => {
+const submitQuiz = async (quizId, answers) => {
     try {
-        const response = await axiosInstance.get(API_PATHS.QUIZZES.SUBMIT_QUIZ(quizId),{answers});
+        const response = await axiosInstance.post(
+            API_PATHS.QUIZZES.SUBMIT_QUIZ(quizId),
+            { answers }
+        );
+
         return response.data;
     } catch (error) {
-        throw error.response?.data || { message: "failed to submit quiz" };
+        throw error.response?.data || {
+            message: "Failed to submit quiz"
+        };
     }
-}
+};
 
-const getQuizResults = async(quizId) => {
+const getQuizResults = async (quizId) => {
     try {
         const response = await axiosInstance.get(API_PATHS.QUIZZES.GET_QUIZ_RESULTS(quizId));
         return response.data;
@@ -37,7 +43,7 @@ const getQuizResults = async(quizId) => {
     }
 }
 
-const deleteQuiz = async(quizId) => {
+const deleteQuiz = async (quizId) => {
     try {
         const response = await axiosInstance.delete(API_PATHS.QUIZZES.DELETE_QUIZ(quizId));
         return response.data;
