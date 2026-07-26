@@ -133,7 +133,7 @@ const QuizResultPage = () => {
 
         {detailResults.map((result, index) => {
           const userAnswerIndex = result.options.findIndex(opt => opt === result.selectedAnswer);
-          const correctAnswerIndex = result.correctAnswers.startsWith('O')
+          const correctAnswerIndex = result.correctAnswers?.startsWith('O')
             ? parseInt(result.correctAnswers.substring(1)) - 1
             : result.options.findIndex(opt => opt === result.correctAnswers);
           const isCorrect = result.isCorrect;
@@ -229,6 +229,19 @@ const QuizResultPage = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Action Button */}
+      <div className="mt-8 flex justify-center">
+        <Link to={`/documents/${quiz.document._id}`}>
+        <button className="group relative px-8 h-12 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-sm rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/25 active:scale-95 overflow-hidden">
+          <span className="relative z-10 flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" strokeWidth={2.5}/>
+            Return to Document
+          </span>
+          <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover: translate-x-full transition-transform duration-700"/>
+        </button>
+        </Link>
       </div>
     </div>
   )
